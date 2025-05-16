@@ -1,22 +1,23 @@
-# Use an official Node.js runtime as the base image
+# Use official Node.js image
 FROM node:18
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
 # Install dependencies
+COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the application code
+# Copy env file first (so it’s available at build time)
+COPY .env.production .env.local
+
+# Copy source code
 COPY . .
 
 # Build the Next.js app
 RUN npm run build
 
-# Expose the port the app runs on
+# Expose the app port
 EXPOSE 3000
 
 # Start the app
