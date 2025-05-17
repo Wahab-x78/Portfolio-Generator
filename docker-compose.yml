@@ -1,10 +1,11 @@
-version: '3.8'
-
 services:
   app:
     image: wahab91/portfolio-generator
+    container_name: portfolio-pipeline-app
     ports:
-      - "80:3000"
+      - "8081:3000"
+    volumes:
+      - .:/app
     environment:
       - MONGO_URI=mongodb+srv://wowcoupleteam:Wow_3000@cluster0.tonck.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       - JWT_SECRET=portfolio320
