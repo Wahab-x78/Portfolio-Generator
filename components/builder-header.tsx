@@ -1,20 +1,49 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Menu, X, User, LogIn, LogOut, Settings, ChevronDown, Home, Palette, Code, Briefcase } from "lucide-react"
+import jwt from "jsonwebtoken"
 
 interface BuilderHeaderProps {
   isLoggedIn?: boolean
   userName?: string
 }
 
-export function BuilderHeader({ isLoggedIn = false, userName = "" }: BuilderHeaderProps) {
+export function BuilderHeader({ isLoggedIn: initialIsLoggedIn = false, userName: initialUserName = "" }: BuilderHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(initialIsLoggedIn)
+  const [userName, setUserName] = useState(initialUserName)
   const pathname = usePathname()
+  const router = useRouter()
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (token) {
+      try {
+        const decoded = jwt.decode(token) as { userId: string; name?: string }
+        setIsLoggedIn(true)
+        setUserName(decoded.name || "User") // Fallback to "User" if name is not in token
+      } catch (error) {
+        console.error("Invalid token:", error)
+        setIsLoggedIn(false)
+        setUserName("")
+      }
+    } else {
+      setIsLoggedIn(false)
+      setUserName("")
+    }
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem("token")
+    setIsLoggedIn(false)
+    setUserName("")
+    router.push("/login")
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -95,7 +124,7 @@ export function BuilderHeader({ isLoggedIn = false, userName = "" }: BuilderHead
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
@@ -171,26 +200,27 @@ export function BuilderHeader({ isLoggedIn = false, userName = "" }: BuilderHead
               Examples
             </Link>
 
-            <div className="pt-4 border-t border-border/40 flex items-center gap-2">
-              <Link href="/login" className="flex-1">
-                <Button variant="outline" size="sm" className="w-full">
-                  <LogIn className="h-4 w-4 mr-1" />
-                  Log in
-                </Button>
-              </Link>
-              <Link href="/signup" className="flex-1">
-                <Button
-                  size="sm"
-                  className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
-                >
-                  Sign up
-                </Button>
-              </Link>
-            </div>
+            {!isLoggedIn && (
+              <div className="pt-4 border-t border-border/40 flex items-center gap-2">
+                <Link href="/login" className="flex-1">
+                  <Button variant="outline" size="sm" className="w-full">
+                    <LogIn className="h-4 w-4 mr-1" />
+                    Log in
+                  </Button>
+                </Link>
+                <Link href="/signup" className="flex-1">
+                  <Button
+                    size="sm"
+                    className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
+                  >
+                    Sign up
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}
     </header>
   )
 }
-
