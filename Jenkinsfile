@@ -2,24 +2,30 @@ pipeline {
     agent any
 
     stages {
-        stage('Stop Old Jenkins Container') {
+        stage('Pull Docker Image') {
+            steps {
+                sh 'docker pull wahab91/portfolio-generator1'
+            }
+        }
+
+        stage('Stop Existing Container') {
             steps {
                 sh '''
-                docker stop jenkins-portfolio-app || true
-                docker rm jenkins-portfolio-app || true
+                    docker stop portfolio-app-3100 || true
+                    docker rm portfolio-app-3100 || true
                 '''
             }
         }
 
-        stage('Run New Jenkins Container') {
+        stage('Run Docker Container on Port 3100') {
             steps {
                 sh '''
-                docker run -d \
-                --name jenkins-portfolio-app \
-                -p 3100:3000 \
-                -e MONGO_URI=mongodb+srv://wowcoupleteam:Wow_3000@cluster0.tonck.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0 \
-                -e JWT_SECRET=portfolio320 \
-                wahab91/portfolio-generator1
+                    docker run -d \
+                      --name portfolio-app-3100 \
+                      -p 3100:3000 \
+                      -e MONGO_URI='your-mongo-uri' \
+                      -e JWT_SECRET='portfolio320' \
+                      wahab91/portfolio-generator1
                 '''
             }
         }
