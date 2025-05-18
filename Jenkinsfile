@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/<your-username>/<your-repo>.git'
+                git url: 'https://github.com/Wahab-x78/Portfolio-Generator.git'
             }
         }
 
