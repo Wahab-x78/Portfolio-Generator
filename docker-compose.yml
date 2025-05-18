@@ -1,6 +1,6 @@
 services:
   app:
-    image: wahab91/portfolio-generator
+    image: wahab91/portfolio-generator1
     container_name: portfolio-pipeline-app
     ports:
       - "3000:3000"
