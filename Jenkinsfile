@@ -1,22 +1,26 @@
 pipeline {
     agent any
 
-    environment {
-        COMPOSE_PROJECT_NAME = "ci_project"
-    }
-
     stages {
-        stage('Clone Repository') {
+        stage('Stop Old Jenkins Container') {
             steps {
-                git url: 'https://github.com/Wahab-x78/Portfolio-Generator.git'
+                sh '''
+                docker stop jenkins-portfolio-app || true
+                docker rm jenkins-portfolio-app || true
+                '''
             }
         }
 
-        stage('Build and Deploy with Docker Compose') {
+        stage('Run New Jenkins Container') {
             steps {
-                script {
-                    sh 'docker-compose -p $COMPOSE_PROJECT_NAME -f docker-compose.yml up -d --build'
-                }
+                sh '''
+                docker run -d \
+                --name jenkins-portfolio-app \
+                -p 3100:3000 \
+                -e MONGO_URI=mongodb+srv://wowcoupleteam:Wow_3000@cluster0.tonck.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0 \
+                -e JWT_SECRET=portfolio320 \
+                wahab91/portfolio-generator1
+                '''
             }
         }
     }
