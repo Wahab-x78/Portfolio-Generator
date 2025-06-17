@@ -5,7 +5,7 @@ services:
     container_name: portfolio_app
     image: wahab91/portfolio-generator:latest
     ports:
-      - "4000:5000" # Map host port 4000 to container port 3000
+      - "4000:3000" # Map host port 4000 to container port 3000
     environment:
       - MONGO_URI=mongodb+srv://wowcoupleteam:Wow_3000@cluster0.tonck.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       - JWT_SECRET=portfolio320
