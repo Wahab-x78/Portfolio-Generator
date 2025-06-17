@@ -1,11 +1,24 @@
+version: '3.8'
+
 services:
   app:
-    image: wahab91/portfolio-generator1
-    container_name: portfolio-pipeline-app
+    container_name: portfolio_app
+    image: wahab91/portfolio-generator:latest
     ports:
-      - "3000:3000"
-    volumes:
-      - .:/app
+      - "4000:5000" # Map host port 4000 to container port 3000
     environment:
       - MONGO_URI=mongodb+srv://wowcoupleteam:Wow_3000@cluster0.tonck.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       - JWT_SECRET=portfolio320
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+    volumes:
+      - code-volume:/app
+    networks:
+      - portfolio-network
+
+volumes:
+  code-volume:
+    driver: local
+
+networks:
+  portfolio-network:
+    driver: bridge
