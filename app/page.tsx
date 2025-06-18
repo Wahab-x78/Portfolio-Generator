@@ -254,7 +254,7 @@ export default function Home() {
                 </ul>
                 <AuthLink href="/builder/info">
                   <Button className="glow-button rounded-full px-6">
-                    Start Building Now <ArrowRight className="ml-2 h-4 w-4" />
+                    Start Building <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </AuthLink>
               </div>
